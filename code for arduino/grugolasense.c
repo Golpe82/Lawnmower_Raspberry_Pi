@@ -18,38 +18,47 @@
 ///////////
 
 //for ultrasonic function
-#define USTRIGGER 12
-#define USECHO 8
+#define USTRIGGER 12 //define pin name for trigger
+#define USECHO 8  //define pin name for echo
 #define USECHOVALUE digitalRead(8)//read ultrasonic echo value
+
+
+/////////////
+//FUNCTIONS//
+/////////////
 
 //Function for ultrasonic distance measure
 double ultrasonic()
 {
-  double USdistance,anfang,ende,signaltime;
+  static double distance,anfang,ende,signaltime;
+  static unsigned int counter,add;
 
-  digitalWrite(USTRIGGER, LOW); //be sure, trigger is low
-  delayMicroseconds(2);
-  digitalWrite(USTRIGGER, HIGH); //put trigger high
-  delayMicroseconds(10); //for 10 us
-  digitalWrite(USTRIGGER,LOW); //put trigger low
-  anfang=micros();
+  for(counter=add=0;counter<10;counter++) //do ten measures...
+  {
+    digitalWrite(USTRIGGER, LOW); //be sure, trigger is low
+    delayMicroseconds(2);
+    digitalWrite(USTRIGGER, HIGH); //put trigger high
+    delayMicroseconds(10); //for 10 us
+    digitalWrite(USTRIGGER,LOW); //put trigger low
   
-  while(!USECHOVALUE)//wait for rising edge
-  {
-      anfang=micros();
-      delayMicroseconds(5);
+    while(!USECHOVALUE)//wait for rising edge
+    {
+        anfang=micros();
+    }
+
+    while(USECHOVALUE)//wait for falling edge
+    {
+        ende=micros();
+    }
+
+    signaltime=ende-anfang;  //calculate the time of the signal
+    add+=((signaltime/2)*0.03432);  //add measure 0 ´til 9
+    delay(50);
   }
 
-  while(USECHOVALUE)//wait for falling edge
-  {
-      ende=micros();
-      delayMicroseconds(5);
-  }
+  distance=add/counter; //...and then calculate the distance mean value in cm
+  return distance; //give the distance to main
 
-  signaltime=ende-anfang;  //calculate the time of the signal
-  USdistance=(signaltime/2)*0.03432;  //calculate the distance in cm
-
-  return USdistance;
 }
 
 
