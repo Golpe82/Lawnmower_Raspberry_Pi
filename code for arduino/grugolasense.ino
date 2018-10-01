@@ -12,6 +12,9 @@
 
 #include "grugolasense.h"
 
+bool turn= false;
+double USdistance=0;
+
 void setup() {
 Serial.begin(9600);
 pinMode(12, OUTPUT);//Trigger
@@ -20,8 +23,13 @@ pinMode(8, INPUT); //echo
 }
 
 void loop() {
+
   Serial.print("US distance to obstacle: ");
-  Serial.print(ultrasonic());
+  USdistance=Serial.print(ultrasonic()); //call the function of ultrasonic measure
   Serial.println(" cm");
-  delay(250);
+  if( ultrasonic()<(4.00)) turn=true; //if the distance to obstacle is less as 4 cm, mower must turn
+  else turn=false;
+  Serial.println("should i turn?");
+  Serial.println(turn);
+  delay(50);
 }
