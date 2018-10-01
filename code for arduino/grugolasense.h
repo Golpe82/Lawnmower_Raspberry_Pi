@@ -20,11 +20,11 @@
         extern "C"{
         #endif
 
-        extern int blinky();
+        extern double ultrasonic();//function for ultrasonic measure
 
         #ifdef __cplusplus
         }
         #endif
-//+++++End of the sourcecode from a.c file
+//+++++End of the sourcecode from a .c file
 
 #endif
